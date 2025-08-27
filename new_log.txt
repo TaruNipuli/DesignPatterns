@@ -1,0 +1,2 @@
+This message goes to new_log.txt
+This message goes to new_log.txt
