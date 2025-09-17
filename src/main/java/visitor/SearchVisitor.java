@@ -3,8 +3,7 @@ package visitor;
 import java.util.ArrayList;
 import java.util.List;
 
-// SearchVisitor traverses the file system and collects files
-// that match a specified name pattern or file extension.
+// SearchVisitor traverses the file system and collects files that match specified criterion
 public class SearchVisitor implements FileSystemVisitor {
 
     // List to store matching files
@@ -19,7 +18,7 @@ public class SearchVisitor implements FileSystemVisitor {
         this.matchingFiles = new ArrayList<>();
     }
 
-    // Visit a file: if its name contains the search pattern, add it to the list
+    // Visit a file: if its name contains the search pattern -> add it to the list
     @Override
     public void visit(File file) {
         if (file.getName().contains(searchPattern)) {
@@ -27,7 +26,7 @@ public class SearchVisitor implements FileSystemVisitor {
         }
     }
 
-    // Visit a directory: traverse all children recursively
+    // When visiting directory, visit all its child elements one by one
     @Override
     public void visit(Directory directory) {
         for (FileSystemElement element : directory.getChildren()) {
@@ -35,7 +34,7 @@ public class SearchVisitor implements FileSystemVisitor {
         }
     }
 
-    // Returns the list of matching files
+    // Returns list of matching files
     public List<File> getMatchingFiles() {
         return matchingFiles;
     }

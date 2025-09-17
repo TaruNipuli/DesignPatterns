@@ -11,7 +11,7 @@ public class Main {
 
         // Crate directories
         Directory directory = new Directory("MainFolder");
-        Directory directory1 = new Directory("Assignments");
+        Directory directory1 = new Directory("Documents");
         Directory directory2 = new Directory("Reports");
         Directory directory3 = new Directory("Photos");
 
@@ -21,8 +21,8 @@ public class Main {
         directory3.addChild(file3);
         directory3.addChild(file4);
 
+        directory1.addChild(directory2);
         directory.addChild(directory1);
-        directory.addChild(directory2);
         directory.addChild(directory3);
 
         // Create SizeCalculatorVisitor
