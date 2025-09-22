@@ -30,7 +30,7 @@ public class Computer {
     }
 
 
-    // Returnsreadable string of the computer configuration
+    // Returns readable string of the computer configuration
     @Override
     public String toString() {
         return "Computer Configuration:\n" +
