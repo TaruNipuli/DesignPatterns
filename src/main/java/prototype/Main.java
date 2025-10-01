@@ -1,58 +1,133 @@
 package prototype;
 
-// Main program to demonstrate recommendation system
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
 
+        // Create the system that will hold all recommendations
+        RecommendationSystem system = new RecommendationSystem();
+
         // Create books
-        Book book1 = new Book("Harry Potter and the Philosopher's Stone", "J.K. Rowling", "Fantasy", 1997);
+        Book book1 = new Book("Harry Potter", "J.K. Rowling", "Fantasy", 1997);
         Book book2 = new Book("The Very Hungry Caterpillar", "Eric Carle", "Children's Picture Book", 1969);
         Book book3 = new Book("The Da Vinci Code", "Dan Brown", "Thriller", 2003);
         Book book4 = new Book("Dune", "Frank Herbert", "Sci-Fi", 1965);
-        Book book5 = new Book("Percy Jackson and the Lightning Thief", "Rick Riordan", "Fantasy", 2005);
-        Book book6 = new Book("Green Eggs and Ham", "Dr. Seuss", "Children's Picture Book", 1960);
+
+        // Create recommendations for different audiences
+        Recommendation rec1 = new Recommendation("Adults");
+        rec1.addBook(book3);
+        rec1.addBook(book4);
+        Recommendation rec2 = new Recommendation("Children");
+        rec2.addBook(book2);
+        Recommendation rec3 = new Recommendation("Teens");
+        rec3.addBook(book1);
 
 
-        // Create recommendations
-        Recommendation recommendation1 = new Recommendation("Adults");
-        recommendation1.addBook(book3);
+        // Add recommendations to the system
+        system.addRecommendation(rec1);
+        system.addRecommendation(rec2);
+        system.addRecommendation(rec3);
 
-        Recommendation recommendation2 = new Recommendation("Children");
-        recommendation2.addBook(book2);
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
 
-        Recommendation recommendation3 = new Recommendation("Teens");
-        recommendation3.addBook(book1);
+        // Main loop for user interaction
+        while (running) {
+            System.out.println("\n--- Book Recommendation System ---");
+            System.out.println("1. Show all recommendations");
+            System.out.println("2. Clone & modify a recommendation");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
 
-        // Create recommendation system and add recommendations
-        RecommendationSystem system = new RecommendationSystem();
-        system.addRecommendation(recommendation1);
-        system.addRecommendation(recommendation2);
-        system.addRecommendation(recommendation3);
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
 
-        // Show original recommendations
-        System.out.println("---Original Recommendations---");
-        system.showRecommendations();
+            switch (choice) {
+                case 1:
+                    // Display all recommendations
+                    System.out.println("\n--- All Recommendations ---");
+                    system.showRecommendations();
+                    break;
 
-        // Modify Adults recommendation
-        Recommendation recommendationToModify = system.getRecommendation(0); // Adults
-        recommendationToModify.setTargetAudience("Adults who like Sci-Fi"); // Change audience
-        recommendationToModify.addBook(book4); // Add new book (Dune)
-        recommendationToModify.removeBook("The Da Vinci Code"); // Remove old book from Adult recommendation
+                case 2:
+                    // Clone an existing recommendation and allow modifications
+                    System.out.println("Enter the index of recommendation to clone (starting from 0):");
+                    int index = scanner.nextInt();
+                    scanner.nextLine();
 
-        // Modify Children recommendation
-        Recommendation childrenRec = system.getRecommendation(1);
-        childrenRec.setTargetAudience("Children who love picture books");
-        childrenRec.addBook(book6);
-        childrenRec.removeBook("The Very Hungry Caterpillar");
+                    // Get a deep copy of the recommendation
+                    Recommendation cloned = system.cloneAndModifyRecommendation(index);
 
-        // Modify Teens recommendation
-        Recommendation teensRec = system.getRecommendation(2);
-        teensRec.setTargetAudience("Teens who enjoy fantasy");
-        teensRec.addBook(book5);
-        teensRec.removeBook("Harry Potter and the Philosopher's Stone");
+                    // Let user set a new target audience
+                    System.out.println("Enter new target audience:");
+                    String audience = scanner.nextLine();
+                    cloned.setTargetAudience(audience);
 
-        // Show all recommendations after modification
-        System.out.println("---All Recommendations After Modification---");
-        system.showRecommendations();
+                    boolean modifying = true;
+                    while (modifying) {
+                        // Show modification options
+                        System.out.println("\nModify cloned recommendation:");
+                        System.out.println("1. Add a book");
+                        System.out.println("2. Remove a book by title");
+                        System.out.println("3. Finish modifying");
+                        System.out.print("Choose: ");
+                        int modChoice = scanner.nextInt();
+                        scanner.nextLine();
+
+                        switch (modChoice) {
+                            case 1:
+                                // Add a new book from user input
+                                System.out.println("Enter book info as Title, Author, Genre, Year:");
+                                String input = scanner.nextLine();
+                                String[] parts = input.split(",");
+                                if (parts.length == 4) {
+                                    try {
+                                        String title = parts[0].trim();
+                                        String author = parts[1].trim();
+                                        String genre = parts[2].trim();
+                                        int year = Integer.parseInt(parts[3].trim());
+                                        cloned.addBook(new Book(title, author, genre, year));
+                                    } catch (NumberFormatException e) {
+                                        System.out.println("Year must be a number.");
+                                    }
+                                } else {
+                                    System.out.println("Invalid input format.");
+                                }
+                                break;
+
+                            case 2:
+                                // Remove a book by title
+                                System.out.println("Enter title of book to remove:");
+                                String title = scanner.nextLine();
+                                cloned.removeBookByTitle(title);
+                                break;
+
+                            case 3:
+                                modifying = false;
+                                break;
+
+                            default:
+                                System.out.println("Invalid choice.");
+                                break;
+                        }
+                    }
+
+                    // Add the modified clone back into the system
+                    system.addRecommendation(cloned);
+                    System.out.println("Cloned recommendation added.");
+                    break;
+
+                case 3:
+                    running = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid option.");
+                    break;
+            }
+        }
+
+        System.out.println("Exiting Book Recommendation System.");
     }
 }
