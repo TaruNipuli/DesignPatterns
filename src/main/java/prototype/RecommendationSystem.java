@@ -26,6 +26,6 @@ public class RecommendationSystem {
     // Clone recommendation at given index
     public Recommendation cloneAndModifyRecommendation(int index) {
         Recommendation original = recommendations.get(index);
-        return original.clone(); 
+        return original.clone();
     }
 }
